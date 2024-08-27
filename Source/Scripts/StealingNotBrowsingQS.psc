@@ -1,8 +1,8 @@
-Scriptname StealingIsNotBrowsing extends ReferenceAlias
+Scriptname StealingNotBrowsingQS extends Quest
 
 import PO3_SKSEFunctions
 import RogueUI
-import DbAliasTimer
+import DbFormTimer
 ;----------------PROPERTIES---------------
 Actor Property PlayerRef Auto
 MiscObject Property Lockpick Auto
@@ -255,7 +255,7 @@ Event OnMenuOpen(String MenuName)
         ;ShowNotif("caps are: " + timerMinCap.GetValue() + " and " + timerMaxCap.GetValue())
         ShowNotif("Timer is " + Timer)
 
-        DbAliasTimer.StartMenuModeTimer(self, Timer as float, 2)
+        DbFormTimer.StartMenuModeTimer(self, Timer as float, 2)
         
 
     endif
@@ -264,7 +264,7 @@ endevent
 Auto State busy
         ; Note: Parameterless state events are only supported in Skyrim.
     Event OnBeginState()
-        DbAliasTimer.StartMenuModeTimer(self, Timer as float, 2)
+        DbFormTimer.StartMenuModeTimer(self, Timer as float, 2)
     EndEvent
     Event OnEndState()
     EndEvent
@@ -280,10 +280,10 @@ Event OnTimerMenuMode(int aiTimerID)
 EndEvent
 
 Event OnMenuClose(String MenuName)
-    float el_time = DbAliasTimer.GetTimeElapsedOnMenuModeTimer(self, 2)
+    float el_time = DbFormTimer.GetTimeElapsedOnMenuModeTimer(self, 2)
     ShowNotif("Closed Menu Timer and the elapsed time so far is: " + el_time)
     if MenuName == "ContainerMenu"
-        DbAliasTimer.CancelMenuModeTimer(self, 2)
+        DbFormTimer.CancelMenuModeTimer(self, 2)
         ShowNotif("closed menu with ID ["+ 2 + "]")
     endif
 Endevent
