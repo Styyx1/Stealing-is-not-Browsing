@@ -1,0 +1,6 @@
+Build/
+.vscode/
+*.esp
+meta.ini
+*.code-workspace
+*.ppj
