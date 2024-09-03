@@ -44,6 +44,19 @@ MagicEffect[] activeList
 float SleepModifier
 
 ;----------------FUNCTIONS---------------
+
+bool Function IsPickingLock(Actor akActor)
+    If (akActor.IsDead())
+        return false
+    elseif (akActor.IsPlayerTeammate())
+        return false
+    elseif (akActor.IsOffLimits() && !akActor.isDead() && !akActor.IsPlayerTeammate())
+        return true
+    Else
+        return true
+    EndIf
+endfunction
+
 bool Function HasPotionKeyword(Form akBaseObject)
     If akBaseObject.HasKeyword(Pickpocket_TimeIncrease_1)
         return true
@@ -112,7 +125,7 @@ float Function ModifyTimerBy()
 EndFunction
 
 Function TimePickPocket()
-    if !GetContainerOwner().IsDead() && !GetContainerOwner().IsPlayerTeammate() && FindEffect()   
+    if  IsPickingLock(GetContainerOwner()) && FindEffect()   
         PO3_SKSEFunctions.HideMenu("ContainerMenu")  
         ShowNotif("waited " + Timer as string + " sec")   
         StyyPickStressMiniTimer.mod(1)
@@ -157,7 +170,7 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Event OnInit()
-    self.RegisterForSingleUpdate(5) ;to prevent double OnInit    
+    self.RegisterForSingleUpdate(1) ;to prevent double OnInit    
 EndEvent
 
 Event OnUpdate()
@@ -255,7 +268,7 @@ Event OnMenuOpen(String MenuName)
         ;ShowNotif("caps are: " + timerMinCap.GetValue() + " and " + timerMaxCap.GetValue())
         ShowNotif("Timer is " + Timer)
 
-        DbAliasTimer.StartMenuModeTimer(self, Timer as float, 2)
+        DbAliasTimer.StartMenuModeTimer(self as Alias, Timer as float, 2)
         
 
     endif
@@ -264,7 +277,7 @@ endevent
 Auto State busy
         ; Note: Parameterless state events are only supported in Skyrim.
     Event OnBeginState()
-        DbAliasTimer.StartMenuModeTimer(self, Timer as float, 2)
+        DbAliasTimer.StartMenuModeTimer(self as Alias, Timer as float, 2)
     EndEvent
     Event OnEndState()
     EndEvent
@@ -272,7 +285,6 @@ EndState
 
 Event OnTimerMenuMode(int aiTimerID)
     ShowNotif("timer's up")
-    ;TimePickPocket()
     if aiTimerID == 2 
         ShowNotif("Timer with ID " + aiTimerID + " out")
         TimePickPocket()
@@ -280,10 +292,10 @@ Event OnTimerMenuMode(int aiTimerID)
 EndEvent
 
 Event OnMenuClose(String MenuName)
-    float el_time = DbAliasTimer.GetTimeElapsedOnMenuModeTimer(self, 2)
+    float el_time = DbAliasTimer.GetTimeElapsedOnMenuModeTimer(self as Alias, 2)
     ShowNotif("Closed Menu Timer and the elapsed time so far is: " + el_time)
     if MenuName == "ContainerMenu"
-        DbAliasTimer.CancelMenuModeTimer(self, 2)
+        DbAliasTimer.CancelMenuModeTimer(self as Alias, 2)
         ShowNotif("closed menu with ID ["+ 2 + "]")
     endif
 Endevent
